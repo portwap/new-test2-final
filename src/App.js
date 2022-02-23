@@ -1,24 +1,37 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useState, useEffect } from "react";
+import Loading from "./Loading";
+import Pictures from "./Pictures";
+
+const url = "https://boiling-refuge-66454.herokuapp.com/images/";
 
 function App() {
+  const [loading, setLoading] = useState(false);
+  const [pictures, setPictures] = useState([]);
+
+  const fetchPictures = async () => {
+    setLoading(true);
+    const response = await fetch(url);
+    const pictures = await response.json();
+    setLoading(false);
+    setPictures(pictures);
+  };
+
+  useEffect(() => {
+    fetchPictures();
+  }, []);
+  
+
+  if (loading) {
+    return (
+      <main>
+        <Loading />
+      </main>
+    );
+  }
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <main>
+      <Pictures pictures={pictures} />
+    </main>
   );
 }
 
